@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }
 
-              final cycleStart = snap.data; // First day of latest budget plan
+              final cycleStart = snap.data; 
 
               return BlocProvider<InsightsCubit>(
                 create: (_) =>
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                           const DashboardInfo(),
                           const SizedBox(height: 20),
 
-                          /* ────────── CHART ────────── */
+
                           BlocBuilder<InsightsCubit, InsightsState>(
                             builder: (_, state) {
                               if (state is! InsightsLoaded) {
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
 
                           const SizedBox(height: 8),
 
-                          /* ───── SUMMARY CARD ───── */
+
                           BlocBuilder<InsightsCubit, InsightsState>(
                             builder: (_, state) {
                               if (state is! InsightsLoaded) {
@@ -178,16 +178,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /* ─ Get the FIRST date of the latest budget plan ─ */
+
   Future<DateTime?> _getLatestBudgetStartDate(String userId) async {
     final sb = serviceLocator<SupabaseClient>();
 
-    // Get the OLDEST date from the latest budget insertion
+
     final row = await sb
         .from('daily_budget')
         .select('date')
         .eq('user_id', userId)
-        .order('date', ascending: true) // OLDEST first
+        .order('date', ascending: true) 
         .limit(1)
         .maybeSingle();
 

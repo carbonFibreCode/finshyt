@@ -30,7 +30,7 @@ final class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
   BudgetRemoteDataSourceImpl(this._sb);
   final SupabaseClient _sb;
 
-  /* ───────────────────────── makeDraft ───────────────────────── */
+//maiking draft
   @override
   Future<BudgetPlan> makeDraft({
     required String userId,
@@ -39,7 +39,7 @@ final class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
     required String city,
     required DateTime eventDate,
   }) async {
-    /* 1 ▸ fetch recent expenses ----------------------------------- */
+//fetch recent expenses
     final historyRows = await _sb
         .from('expenses')
         .select()
@@ -47,7 +47,7 @@ final class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
         .order('ts', ascending: false)
         .limit(60);
 
-    /* 2 ▸ build plain-string message list ------------------------- */
+//build plain-string message list
     final userPrompt =
         '''
 monthly_budget : $monthlyBudget
@@ -68,7 +68,7 @@ eventDate(consider the description for this date in general cases)      : $event
       'seed': 42,
     });
 
-    /* 3 ▸ POST to Groq ------------------------------------------- */
+//POST to Groq 
     final res = await http.post(
       Uri.parse('https://api.groq.com/openai/v1/chat/completions'),
       headers: {
@@ -82,7 +82,7 @@ eventDate(consider the description for this date in general cases)      : $event
       throw Exception('Groq ${res.statusCode}: ${res.body.substring(0, 200)}');
     }
 
-    /* 4 ▸ extract assistant text --------------------------------- */
+//extract assistant text 
     final content =
         jsonDecode(res.body)['choices'][0]['message']['content'] as String;
 
@@ -93,7 +93,7 @@ eventDate(consider the description for this date in general cases)      : $event
     return BudgetPlan.fromJson(jsonDecode(content));
   }
 
-  /* ───────────────────────── savePlan ───────────────────────── */
+//savePlan
   @override
   Future<void> savePlan({
     required String userId,

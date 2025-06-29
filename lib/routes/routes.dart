@@ -7,7 +7,7 @@ class RouteGenerator {
   static Route<dynamic>? generate(RouteSettings settings) {
     switch (settings.name) {
       case '/planning':
-        final a = settings.arguments as Map;          // comes from pushNamed
+        final a = settings.arguments as Map;         
         return MaterialPageRoute(
           builder: (_) => PlanningScreen(
             userId        : a['userId']       as String,
@@ -19,7 +19,6 @@ class RouteGenerator {
           ),
         );
 
-      /* — other named routes, if any — */
 
       default:
         return MaterialPageRoute(

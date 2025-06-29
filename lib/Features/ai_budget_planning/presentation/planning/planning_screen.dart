@@ -35,11 +35,10 @@ class PlanningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* ───── transform AI payload → chart & sums ───── */
+//transform AI payload → chart & sums 
     final bars = plan.items
         .map<ChartData>(
           (p) => ChartData(
-            // second bar kept = 0
             label: DateFormat('d').format(p.date),
             primaryValue: p.amount,
           ),
@@ -101,11 +100,11 @@ class PlanningScreen extends StatelessWidget {
             itemCount: 2 + plan.items.length,
             separatorBuilder: (_, __) => const SizedBox(height: 8),
             itemBuilder: (_, idx) {
-              /* 0 ▸ bar chart of per-day budgets */
+
               if (idx == 0) {
                 return Chart(
                   data: bars,
-                  chartType: ChartType.singleBar, // second bar = 0
+                  chartType: ChartType.singleBar, 
                   maxY: _maxY(bars),
                   title1: 'Daily Budget',
                   primaryColor: AppColors.secondary,

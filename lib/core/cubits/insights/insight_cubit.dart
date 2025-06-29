@@ -14,10 +14,11 @@ class InsightsCubit extends Cubit<InsightsState> {
   StreamSubscription? _budSub;
 
   Future<void> load(String userId, {DateTime? startDate}) async {
+    if (isClosed) return;
     emit(InsightsLoading());
     await _refresh(userId, startDate);
+    //subscription realtime sync
 
-    /* -------- realtime ------------- */
     final sb = Supabase.instance.client;
 
     _expSub?.cancel();
@@ -37,21 +38,28 @@ class InsightsCubit extends Cubit<InsightsState> {
   }
 
   Future<void> _refresh(String userId, DateTime? start) async {
+    if (isClosed) return;
     try {
       final (chart, groups, totBudget, totSpent) = await _getInsights(
         userId,
         startDate: start,
       );
-      emit(
-        InsightsLoaded(
-          chart: chart,
-          days: groups,
-          totalBudget: totBudget,
-          totalSpent: totSpent,
-        ),
-      );
+      if (!isClosed) {
+
+        emit(
+          InsightsLoaded(
+            chart: chart,
+            days: groups,
+            totalBudget: totBudget,
+            totalSpent: totSpent,
+          ),
+        );
+      }
     } catch (e) {
-      emit(InsightsFailure(e.toString()));
+      if (!isClosed) {
+        emit(InsightsFailure(e.toString()));
+      }
+      
     }
   }
 

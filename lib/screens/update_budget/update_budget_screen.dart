@@ -21,7 +21,7 @@ class UpdateBudget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => serviceLocator<BudgetDraftCubit>(), // ← fixed[8]
+      create: (_) => serviceLocator<BudgetDraftCubit>(),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary,
@@ -51,8 +51,6 @@ class UpdateBudget extends StatelessWidget {
     );
   }
 }
-
-/* ────────────────────────── FORM ────────────────────────── */
 
 class _Form extends StatefulWidget {
   const _Form({required this.userId});
@@ -106,8 +104,12 @@ class _FormState extends State<_Form> {
             },
           );
         }
-        if(state is BudgetDraftLoading) LoadingScreen().show(context: ctx, text: 'Drafting your Budget');
-        if (state is BudgetDraftError) showSnackBar(ctx, 'Budget drafting failed', isError: true); // [9]
+        if (state is BudgetDraftLoading) {
+          LoadingScreen().show(context: ctx, text: 'Drafting your Budget');
+        }
+        if (state is BudgetDraftError) {
+          showSnackBar(ctx, 'Budget drafting failed', isError: true);
+        }
       },
       child: Center(
         heightFactor: 1.5,
@@ -206,7 +208,7 @@ class _FormState extends State<_Form> {
     if (picked != null) setState(() => eventDate = picked);
   }
 
-  /* ---------- validation + cubit call ---------- */
+
   void _submit() {
     final amount = double.tryParse(budgetCtl.text.trim()) ?? 0;
     final desc = descriptionCtl.text.trim();
@@ -217,12 +219,12 @@ class _FormState extends State<_Form> {
     }
 
     context.read<BudgetDraftCubit>().makeDraft(
-      // [8]
+
       userId: widget.userId,
       dailyBudget: amount,
       description: desc,
       city: city ?? 'Unknown',
-      eventDate: eventDate != null ? eventDate! : DateTime.now()
+      eventDate: eventDate != null ? eventDate! : DateTime.now(),
     );
   }
 }

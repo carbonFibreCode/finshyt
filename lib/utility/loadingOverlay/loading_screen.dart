@@ -32,9 +32,8 @@ class LoadingScreen {
     final _text = StreamController<String>();
     _text.add(text);
 
-    final state = Overlay.of(context);
-    final renderBox = context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
+    // Use MediaQuery instead of RenderBox to avoid layout issues
+    final size = MediaQuery.of(context).size;
 
     final overlay = OverlayEntry(
       builder: (context) {
@@ -86,8 +85,14 @@ class LoadingScreen {
         );
       },
     );
-  
-    state.insert(overlay);
+
+    // Use addPostFrameCallback to ensure layout is complete before inserting overlay
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final state = Overlay.of(context);
+      if (state.mounted) {
+        state.insert(overlay);
+      }
+    });
 
     return LoadingScreenController(close:() {
       _text.close();

@@ -19,6 +19,6 @@ final class InsightsLoaded extends InsightsState {
 
   final List<ChartData>         chart;       // daily budget vs spent
   final List<DailyExpenseGroup> days;        // grouped expenses
-  final double                  totalBudget; // Σ daily budgets
-  final double                  totalSpent;  // Σ expenses
+  final double                  totalBudget; //  sum ofdaily budgets
+  final double                  totalSpent;  // sum ofexpenses
 }

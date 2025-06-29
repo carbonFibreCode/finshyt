@@ -16,13 +16,13 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
   await initDependencies();
   runApp(
-    // Step 1: Provide all Blocs at the very top of the widget tree.
+
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
         BlocProvider(create: (_) => serviceLocator<AppUserCubit>()),
       ],
-      // Step 2: The root of your application is MyApp.
+
       child: const MyApp(),
     ),
   );
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Step 3: MaterialApp provides the theme, routing, and directionality.
+
     return MaterialApp(
       title: 'FinShyt',
       theme: ThemeData(
@@ -58,9 +58,9 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.primary,
         useMaterial3: true,
       ),
-      initialRoute: '/',                  // your home route
+      initialRoute: '/',                  
       onGenerateRoute: RouteGenerator.generate,
-      // Step 4: The home of your app is the NavigationHandler, which will decide what to show.
+
       home: const NavigationHandler(),
     );
   }
@@ -77,20 +77,18 @@ class _NavigationHandlerState extends State<NavigationHandler> {
   @override
   void initState() {
     super.initState();
-    // Dispatch the initial event to check if the user is logged in.
+
     context.read<AuthBloc>().add(const AuthEventIsUserLoggedIn());
   }
 
   @override
   Widget build(BuildContext context) {
-    // Step 5: This listener handles navigation side-effects.
+
     return BlocConsumer<AppUserCubit, AppUserState>(
       listener: (context, state) {
-        // Handle side effects only - NO navigation here
-        print('DEBUG: AppUserCubit state changed to: $state');
+
       },
       builder: (context, state) {
-        print('DEBUG: BlocConsumer builder called, state: $state');
         if (state is AppUserLoggedIn) {
           return const HomePage();
         } else {

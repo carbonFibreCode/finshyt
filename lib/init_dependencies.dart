@@ -41,7 +41,7 @@ Future<void> initDependencies() async {
   serviceLocator.registerLazySingleton(() => supabase.client);
 
   _initAuth();
-  _initExpense();     // ←–– call it
+  _initExpense();     
   _initInsights();
   _initBudget();
   //core

@@ -72,7 +72,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           child: Center(
             child: Image.asset(
               Misc.logoUrl,
-              height: 100, // Reduced size for better proportion
+              height: 100, 
             ),
           ),
         ),
@@ -80,7 +80,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           child: Text(
             AppStrings.tagline,
             style: GoogleFonts.inter(
-              fontSize: 16, // Slightly smaller for elegance
+              fontSize: 16, 
               color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.w500,
             ),
@@ -88,7 +88,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           ),
         ),
       ],
-    ); // Reduced spacing
+    ); 
   }
 
   Widget _buildAnimatedCard() {

@@ -15,7 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
-// FIXED: Added generic types
+
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignUp _userSignUp;
   final UserLogin _userLogin;
@@ -40,7 +40,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _appUserCubit = appUserCubit,
         super(AuthInitial()) {
     
-    // FIXED: Proper event handler registrations
+
     on<AuthEventIsUserLoggedIn>(_onAuthEventIsUserLoggedIn);
     on<AuthEventSignUp>(_onAuthEventSignUp);
     on<AuthEventLogin>(_onAuthEventLogin);
@@ -49,7 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventNavigateToPasswordReset>(_onAuthEventNavigateToPasswordReset);
   }
 
-  // FIXED: Each handler is now a separate method with proper closing braces
+
   void _onAuthEventIsUserLoggedIn(
     AuthEventIsUserLoggedIn event,
     Emitter<AuthState> emit,
@@ -129,10 +129,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   
 
   void _emitAuthSuccess(User user, Emitter<AuthState> emit) {
-    print('DEBUG: _emitAuthSuccess called with user: ${user.email}'); 
+ 
     _appUserCubit.updateUser(user);
-    print('DEBUG: AppUserCubit updated');
+
     emit(AuthSuccess(user));
-    print('DEBUG: AuthSuccess emitted');
+
   }
 }

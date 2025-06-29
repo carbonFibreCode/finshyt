@@ -7,7 +7,7 @@ part 'budget_save_state.dart';
 class BudgetSaveCubit extends Cubit<BudgetSaveState> {
   BudgetSaveCubit(this._repo) : super(BudgetSaveInitial());
 
-  final BudgetRepository _repo;               // uses repo.savePlan[7]
+  final BudgetRepository _repo;               // uses repo.savePlan
 
   Future<void> savePlan({
     required String userId,
@@ -16,7 +16,7 @@ class BudgetSaveCubit extends Cubit<BudgetSaveState> {
   }) async {
     emit(BudgetSaveLoading());
     try {
-      await _repo.savePlan(                   // remote call wired in repo[6]
+      await _repo.savePlan(                   // remote call wired in repo
         userId: userId,
         dailyBudget: dailyBudget,
         plan: plan,

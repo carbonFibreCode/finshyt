@@ -56,7 +56,9 @@ class _LoginCardState extends State<LoginCard> {
             (route) => false,
           );
         } else if (state is AuthLoading) {
-          LoadingScreen().show(context: context, text: 'Logging In');
+          if (mounted) {
+            LoadingScreen().show(context: context, text: 'Just a moment');
+          }
         } else if (state is AuthSuccess) {
           LoadingScreen().hide();
           Navigator.of(context).pushAndRemoveUntil(
@@ -67,7 +69,7 @@ class _LoginCardState extends State<LoginCard> {
       },
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24), // Slightly smaller radius
+          borderRadius: BorderRadius.circular(24),
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
