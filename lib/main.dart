@@ -19,7 +19,7 @@ Future<void> main() async {
 
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
+        BlocProvider(create: (_) => serviceLocator<AuthBloc>()..add(AuthEventIsUserLoggedIn())),
         BlocProvider(create: (_) => serviceLocator<AppUserCubit>()),
       ],
 
@@ -60,6 +60,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',                  
       onGenerateRoute: RouteGenerator.generate,
+      debugShowCheckedModeBanner: false,
 
       home: const NavigationHandler(),
     );

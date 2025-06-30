@@ -47,24 +47,29 @@ class _LoginCardState extends State<LoginCard> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
-        if (state is AuthFailure) {
+        if (state is AuthLoading) {
+          LoadingScreen().show(context: context, text: 'Just a moment');
+        } else {
           LoadingScreen().hide();
-          showSnackBar(context, 'Authentication Failed');
-        } else if (state is AuthPasswordResetInitiated) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const ForgotPasswordView()),
-            (route) => false,
-          );
-        } else if (state is AuthLoading) {
-          if (mounted) {
-            LoadingScreen().show(context: context, text: 'Just a moment');
+
+          if (state is AuthFailure) {
+            LoadingScreen().hide();
+            showSnackBar(context, 'Authentication Failed');
+          } else if (state is AuthPasswordResetInitiated) {
+            LoadingScreen().hide();
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => const ForgotPasswordView(),
+              ),
+              (route) => false,
+            );
+          } else if (state is AuthSuccess) {
+            LoadingScreen().hide();
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              (route) => false,
+            );
           }
-        } else if (state is AuthSuccess) {
-          LoadingScreen().hide();
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomePage()),
-            (route) => false,
-          );
         }
       },
       child: Container(
@@ -85,13 +90,10 @@ class _LoginCardState extends State<LoginCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
               Center(
                 child: Text(AppStrings.login, style: AppTextStyles.cardTitle),
               ),
               const SizedBox(height: 32),
-
-              // Username field
               Text(
                 AppStrings.username,
                 style: GoogleFonts.inter(
@@ -114,8 +116,6 @@ class _LoginCardState extends State<LoginCard> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Password field
               Text(AppStrings.password, style: AppTextStyles.fieldLabel),
               const SizedBox(height: 8),
               TextField(
@@ -146,12 +146,12 @@ class _LoginCardState extends State<LoginCard> {
                 ),
               ),
               const SizedBox(height: 16),
-
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {
                     context.read<AuthBloc>().add(
+                      // ← FIXED
                       const AuthEventNavigateToPasswordReset(),
                     );
                   },
@@ -165,10 +165,7 @@ class _LoginCardState extends State<LoginCard> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
-              // Login button
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -177,6 +174,7 @@ class _LoginCardState extends State<LoginCard> {
                     final email = _usernameController.text;
                     final password = _passwordController.text;
                     context.read<AuthBloc>().add(
+                      // ← FIXED
                       AuthEventLogin(email: email, password: password),
                     );
                   },

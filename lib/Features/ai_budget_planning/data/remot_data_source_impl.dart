@@ -15,14 +15,15 @@ Return ONE JSON object only, no markdown, obey this schema:
     { "date":"YYYY-MM-DD", "day":"Mon", "category":"string", "amount":123.45 }
   ]
 }
+****All the below given points must be strictly followed to giving the desired plan****
 • Generate 30 consecutive days starting today.
-• Sum(amount) ≤ monthly_budget.
+• Sum(amount) ≤ monthly_budget (follow this condition stricly).
 • If user description provided → honour it.
 • Else use history.
 • If no history → use averages for the city.
-→ if the user has entered the event date, consider it but plan the budget
+→ *****if the user has entered the event date, consider it but plan the budget
  from the current date to next 30 days, not the 
- event date to next 30 days
+ event date to next 30 days*****
 → try to plan for 3% less amount then the budget given
 ''';
 

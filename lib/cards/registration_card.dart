@@ -56,10 +56,14 @@ class _RegistrationCardState extends State<RegistrationCard> {
           LoadingScreen().hide();
           showSnackBar(context, 'Registration Failed', isError: true);
           // rregistration successful - show success message
-        } if(state is AuthSuccess){
+        }
+        if (state is AuthSuccess) {
           LoadingScreen().hide();
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomePage()), (route) => false);
-        } else if(state is AuthLoading){
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const HomePage()),
+            (route) => false,
+          );
+        } else if (state is AuthLoading) {
           LoadingScreen().show(context: context, text: 'Just a moment');
         }
       },

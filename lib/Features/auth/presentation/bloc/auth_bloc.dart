@@ -1,5 +1,3 @@
-// lib/Features/auth/domain/presentation/bloc/auth_bloc.dart
-
 import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
 import 'package:finshyt/core/noParamsClass/no_params.dart';
 import 'package:finshyt/core/entities/user.dart';
@@ -14,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
-
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignUp _userSignUp;
@@ -32,15 +29,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required UserPasswordReset userPasswordReset,
     required CurrentUser currentUser,
     required AppUserCubit appUserCubit,
-  })  : _userSignUp = userSignUp,
-        _userLogin = userLogin,
-        _userLogout = userLogout,
-        _userPasswordReset = userPasswordReset,
-        _currentUser = currentUser,
-        _appUserCubit = appUserCubit,
-        super(AuthInitial()) {
-    
-
+  }) : _userSignUp = userSignUp,
+       _userLogin = userLogin,
+       _userLogout = userLogout,
+       _userPasswordReset = userPasswordReset,
+       _currentUser = currentUser,
+       _appUserCubit = appUserCubit,
+       super(AuthInitial()) {
     on<AuthEventIsUserLoggedIn>(_onAuthEventIsUserLoggedIn);
     on<AuthEventSignUp>(_onAuthEventSignUp);
     on<AuthEventLogin>(_onAuthEventLogin);
@@ -49,20 +44,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventNavigateToPasswordReset>(_onAuthEventNavigateToPasswordReset);
   }
 
-
   void _onAuthEventIsUserLoggedIn(
     AuthEventIsUserLoggedIn event,
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
     final res = await _currentUser(NoParams());
-    res.fold(
-      (l) {
-        _appUserCubit.updateUser(null);
-        emit(const AuthLoggedOut());
-      },
-      (user) => _emitAuthSuccess(user, emit),
-    );
+    res.fold((l) {
+      _appUserCubit.updateUser(null);
+      emit(const AuthLoggedOut());
+    }, (user) => _emitAuthSuccess(user, emit));
   }
 
   void _onAuthEventSignUp(
@@ -79,7 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
     res.fold(
       (l) => emit(AuthFailure(l.message)),
-      (r) => emit(AuthSuccess(r)),
+      (r) => _emitAuthSuccess(r, emit),
     );
   }
 
@@ -94,16 +85,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  void _onAuthEventLogout(AuthEventLogout event, Emitter<AuthState> emit) async {
+  void _onAuthEventLogout(
+    AuthEventLogout event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(AuthLoading());
     final res = await _userLogout(NoParams());
-    res.fold(
-      (l) => emit(AuthFailure(l.message)),
-      (_) {
-        _appUserCubit.updateUser(null);
-        emit(const AuthLoggedOut());
-      },
-    );
+    res.fold((l) => emit(AuthFailure(l.message)), (_) {
+      _appUserCubit.updateUser(null);
+      emit(const AuthLoggedOut());
+    });
   }
 
   void _onAuthEventSendPasswordReset(
@@ -126,13 +117,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) {
     emit(const AuthPasswordResetInitiated());
   }
-  
 
   void _emitAuthSuccess(User user, Emitter<AuthState> emit) {
- 
     _appUserCubit.updateUser(user);
-
     emit(AuthSuccess(user));
-
   }
 }
