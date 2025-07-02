@@ -3,7 +3,7 @@ import 'package:finshyt/constants/app_colors.dart';
 import 'package:finshyt/constants/app_dimensions.dart';
 import 'package:finshyt/constants/app_strings.dart';
 import 'package:finshyt/constants/misc.dart';
-import 'package:finshyt/screens/auth/auth_screen.dart';
+import 'package:finshyt/Features/auth/presentation/screens/auth/auth_screen.dart';
 import 'package:finshyt/utility/dialogs/showErrorDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

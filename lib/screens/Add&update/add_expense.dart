@@ -76,6 +76,7 @@ class _FormState extends State<_Form> {
           Navigator.pop(ctx);
         }
         if (state is AddExpenseFailure) {
+          LoadingScreen().hide();
           showSnackBar(context, 'Failed to Add Expense', isError: true);
         }
         if (state is AddExpenseLoading) {

@@ -3,7 +3,7 @@ import 'package:finshyt/constants/app_colors.dart';
 import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
 import 'package:finshyt/init_dependencies.dart';
 import 'package:finshyt/routes/routes.dart';
-import 'package:finshyt/screens/auth/auth_screen.dart';
+import 'package:finshyt/Features/auth/presentation/screens/auth/auth_screen.dart';
 import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:finshyt/screens/homeScreen/home_page.dart';
 import 'package:flutter/material.dart';

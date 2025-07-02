@@ -59,7 +59,10 @@ class PlanningScreen extends StatelessWidget {
           if (s is BudgetSaveLoading) {
             LoadingScreen().show(context: context, text: 'Saving Budget');
           }
-          if (s is BudgetSaveFailure) showSnackBar(context, 'Budget Saving Failed');
+          if (s is BudgetSaveFailure) {
+            LoadingScreen().hide();
+            showSnackBar(context, 'Budget Saving Failed');
+            }
         },
         child: Scaffold(
           appBar: AppBar(

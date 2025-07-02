@@ -2,7 +2,7 @@ import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:finshyt/constants/app_colors.dart';
 import 'package:finshyt/constants/app_strings.dart';
 import 'package:finshyt/constants/app_text_styles.dart';
-import 'package:finshyt/screens/auth/forgot_password_view.dart';
+import 'package:finshyt/Features/auth/presentation/screens/auth/forgot_password_view.dart';
 import 'package:finshyt/screens/homeScreen/home_page.dart';
 import 'package:finshyt/utility/loadingOverlay/loading_screen.dart';
 import 'package:finshyt/widgets/common/snackbar.dart';

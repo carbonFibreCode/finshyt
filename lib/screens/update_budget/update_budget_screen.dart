@@ -108,6 +108,7 @@ class _FormState extends State<_Form> {
           LoadingScreen().show(context: ctx, text: 'Drafting your Budget');
         }
         if (state is BudgetDraftError) {
+          LoadingScreen().hide();
           showSnackBar(ctx, 'Budget drafting failed', isError: true);
         }
       },

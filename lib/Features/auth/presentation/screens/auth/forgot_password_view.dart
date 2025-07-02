@@ -2,6 +2,7 @@ import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:finshyt/cards/forgot_password.dart';
 import 'package:finshyt/constants/app_colors.dart';
 import 'package:finshyt/constants/misc.dart';
+import 'package:finshyt/utility/loadingOverlay/loading_screen.dart';
 import 'package:finshyt/widgets/common/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +46,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             ),
           );
           if (state is AuthFailure) {
+            LoadingScreen().hide();
             showSnackBar(context, 'Failed to send password reset email', isError: true);
           }
         }
