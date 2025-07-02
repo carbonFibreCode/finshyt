@@ -27,26 +27,27 @@ Finshyt is a personal finance management app that combines artificial intelligen
 
 🎨 **Modern UI/UX**
 - Clean, intuitive interface
-- Dark/Light theme support
 - Progress indicators and visual feedback
 - Responsive design for all screen sizes
 
+
 ## 📸 Screenshots
+HomePage
+![Simulator Screenshot - iPhone 16 Plus - 2025-07-02 at 09 19 29](https://github.com/user-attachments/assets/27894819-d651-4bdd-a5f9-aaa7456be82a)
 
+All insights
+![Simulator Screenshot - iPhone 16 Plus - 2025-07-02 at 09 19 35](https://github.com/user-attachments/assets/af5300f7-95f1-4f47-bea7-e0fe2e44b3dd)
 
+AI Planner
+![Simulator Screenshot - iPhone 16 Plus - 2025-07-02 at 09 20 46](https://github.com/user-attachments/assets/ce1bb9f0-0dd5-4ad1-99de-2f6fbd81709c)
 
+Update Budget Screen
+![Simulator Screenshot - iPhone 16 Plus - 2025-07-02 at 09 41 13](https://github.com/user-attachments/assets/019aee1b-4405-45e9-85d0-4315a933b4c6)
 
+Auth Screens
+![Simulator Screenshot - iPhone 16 Plus - 2025-07-02 at 09 23 14](https://github.com/user-attachments/assets/8b214788-465f-453c-a09a-b3ce4a8b40d6)
 
-
-
-
-
-
-Home Dashboard
-AI Budget Planning
-Financial Insights
-Expense Management
-
+![Simulator Screenshot - iPhone 16 Plus - 2025-07-02 at 09 23 29](https://github.com/user-attachments/assets/c7357da4-a8de-40af-9625-ad4b7e5b6234)
 
 
 
