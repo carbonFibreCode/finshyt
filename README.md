@@ -32,7 +32,7 @@ Finshyt is a personal finance management app that combines artificial intelligen
 
 
 ## 📸 Screenshots
-#HomePage
+# HomePage
 ![Simulator Screenshot - iPhone 16 Plus - 2025-07-02 at 09 19 29](https://github.com/user-attachments/assets/27894819-d651-4bdd-a5f9-aaa7456be82a)
 
 # All insights
