@@ -53,7 +53,7 @@ Finshyt is a personal finance management app that combines artificial intelligen
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Flutter 3.x, Dart
+- **Frontend**: Flutter >3.0, Dart
 - **Backend**: Supabase (PostgreSQL, Real-time subscriptions)
 - **AI Integration**: Groq API (Llama-3-70B model)
 - **State Management**: BLoC/Cubit pattern
