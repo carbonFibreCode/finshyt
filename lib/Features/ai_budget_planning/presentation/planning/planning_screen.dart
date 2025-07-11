@@ -1,19 +1,20 @@
 import 'package:finshyt/Features/ai_budget_planning/presentation/cubit/budget_save_cubit.dart';
-import 'package:finshyt/utility/loadingOverlay/loading_screen.dart';
-import 'package:finshyt/widgets/common/snackbar.dart';
+import 'package:finshyt/Features/insights/presentation/insightsCubit/insight_cubit.dart';
+import 'package:finshyt/core/utility/loadingOverlay/loading_screen.dart';
+import 'package:finshyt/core/widgets/common/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import 'package:finshyt/constants/app_colors.dart';
-import 'package:finshyt/constants/app_dimensions.dart';
-import 'package:finshyt/constants/app_text_styles.dart';
+import 'package:finshyt/core/constants/app_colors.dart';
+import 'package:finshyt/core/constants/app_dimensions.dart';
+import 'package:finshyt/core/constants/app_text_styles.dart';
 import 'package:finshyt/init_dependencies.dart';
 
 import 'package:finshyt/Features/ai_budget_planning/domain/models/models.dart';
-import 'package:finshyt/widgets/homepage/chart.dart';
-import 'package:finshyt/models/chart_data_models.dart';
+import 'package:finshyt/Features/homepage/widgets/chart.dart';
+import 'package:finshyt/core/models/chart_data_models.dart';
 
 class PlanningScreen extends StatelessWidget {
   const PlanningScreen({
@@ -91,11 +92,13 @@ class PlanningScreen extends StatelessWidget {
                 'Approve & Save',
                 style: GoogleFonts.inter(color: AppColors.background),
               ),
-              onPressed: () => ctx.read<BudgetSaveCubit>().savePlan(
+              onPressed: () { ctx.read<BudgetSaveCubit>().savePlan(
                 userId: userId,
                 dailyBudget: monthlyBudget,
                 plan: plan,
-              ),
+              );
+              ctx.read<InsightsCubit>().load(userId, startDate: DateTime.now());
+              }
             ),
           ),
           body: ListView.separated(

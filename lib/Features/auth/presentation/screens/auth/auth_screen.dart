@@ -1,10 +1,10 @@
-import 'package:finshyt/cards/login_card.dart';
-import 'package:finshyt/cards/registration_card.dart';
-import 'package:finshyt/constants/app_colors.dart';
-import 'package:finshyt/constants/app_dimensions.dart';
-import 'package:finshyt/constants/app_strings.dart';
-import 'package:finshyt/constants/misc.dart';
-import 'package:finshyt/controllers/auth_controller.dart';
+import 'package:finshyt/Features/auth/presentation/cards/login_card.dart';
+import 'package:finshyt/Features/auth/presentation/cards/registration_card.dart';
+import 'package:finshyt/core/constants/app_colors.dart';
+import 'package:finshyt/core/constants/app_dimensions.dart';
+import 'package:finshyt/core/constants/app_strings.dart';
+import 'package:finshyt/core/constants/misc.dart';
+import 'package:finshyt/Features/auth/presentation/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

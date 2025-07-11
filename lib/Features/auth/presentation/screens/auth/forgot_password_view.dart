@@ -1,9 +1,9 @@
 import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:finshyt/cards/forgot_password.dart';
-import 'package:finshyt/constants/app_colors.dart';
-import 'package:finshyt/constants/misc.dart';
-import 'package:finshyt/utility/loadingOverlay/loading_screen.dart';
-import 'package:finshyt/widgets/common/snackbar.dart';
+import 'package:finshyt/Features/auth/presentation/cards/forgot_password.dart';
+import 'package:finshyt/core/constants/app_colors.dart';
+import 'package:finshyt/core/constants/misc.dart';
+import 'package:finshyt/core/utility/loadingOverlay/loading_screen.dart';
+import 'package:finshyt/core/widgets/common/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';

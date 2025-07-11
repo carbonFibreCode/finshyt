@@ -1,7 +1,12 @@
-import 'package:finshyt/Features/expense/data/data_source/add_expense_remote_data_source.dart';
-import 'package:finshyt/Features/expense/domain/models/expense_models.dart';
+import 'package:finshyt/Features/expense/domain/enitity/expense_entity.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+abstract interface class ExpenseRemoteDataSource {
+  Future<ExpenseEntity> addExpense({
+    required double amount,
+    required String purpose,
+  });
+}
 
 final class ExpenseRemoteDataSourceImpl implements ExpenseRemoteDataSource {
   ExpenseRemoteDataSourceImpl(this._client);

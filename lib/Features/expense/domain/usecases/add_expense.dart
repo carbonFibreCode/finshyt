@@ -1,6 +1,5 @@
 
-
-import 'package:finshyt/Features/expense/domain/models/expense_models.dart';
+import 'package:finshyt/Features/expense/domain/enitity/expense_entity.dart';
 import 'package:finshyt/Features/expense/domain/repository/repository.dart';
 
 class AddExpense {
