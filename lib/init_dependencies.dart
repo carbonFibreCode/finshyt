@@ -11,6 +11,7 @@ import 'package:finshyt/Features/expense/data/data_source/add_expense_remote_dat
 import 'package:finshyt/Features/expense/data/repositoryimpl/repository_impl.dart';
 import 'package:finshyt/Features/expense/domain/repository/repository.dart';
 import 'package:finshyt/Features/expense/domain/usecases/add_expense.dart';
+import 'package:finshyt/Features/insights/data/dataSources/insights_remote_data_source.dart/insights_remote_data_source.dart';
 import 'package:finshyt/Features/insights/data/repositoryImpl/repository_impl.dart';
 import 'package:finshyt/Features/insights/domain/repository/repository.dart';
 import 'package:finshyt/Features/insights/domain/usecases/get_insights.dart';
@@ -34,7 +35,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
-
   final supabase = await Supabase.initialize(
     anonKey: AppSecrets.supabaseAnonKey,
     url: AppSecrets.supabaseUrl,
@@ -42,7 +42,7 @@ Future<void> initDependencies() async {
   serviceLocator.registerLazySingleton(() => supabase.client);
 
   _initAuth();
-  _initExpense();     
+  _initExpense();
   _initInsights();
   _initBudget();
   //core
@@ -84,8 +84,12 @@ void _initAuth() {
 
 void _initInsights() {
   serviceLocator
+    ..registerFactory<InsightsRemoteDataSource>(
+      () => InsightsRemoteDataSourceImpl(serviceLocator<SupabaseClient>()),
+    )
     ..registerFactory<InsightsRepository>(
-        () => InsightsRepositoryImpl(serviceLocator<SupabaseClient>()))
+      () => InsightsRepositoryImpl(serviceLocator()),
+    )
     ..registerFactory(() => GetInsights(serviceLocator()))
     ..registerFactory(() => InsightsCubit(serviceLocator<GetInsights>()));
 }
@@ -93,9 +97,11 @@ void _initInsights() {
 void _initExpense() {
   serviceLocator
     ..registerFactory<ExpenseRemoteDataSource>(
-        () => ExpenseRemoteDataSourceImpl(serviceLocator<SupabaseClient>()))
+      () => ExpenseRemoteDataSourceImpl(serviceLocator<SupabaseClient>()),
+    )
     ..registerFactory<ExpenseRepository>(
-        () => ExpenseRepositoryImpl(serviceLocator()))
+      () => ExpenseRepositoryImpl(serviceLocator()),
+    )
     ..registerFactory(() => AddExpense(serviceLocator()))
     ..registerFactory(() => AddExpenseCubit(serviceLocator()));
 }
@@ -103,14 +109,14 @@ void _initExpense() {
 void _initBudget() {
   serviceLocator
     ..registerFactory<BudgetRemoteDataSource>(
-        () => BudgetRemoteDataSourceImpl(serviceLocator<SupabaseClient>()))
-    ..registerFactory<BudgetRepository>(() => BudgetRepositoryImpl(serviceLocator()))
+      () => BudgetRemoteDataSourceImpl(serviceLocator<SupabaseClient>()),
+    )
+    ..registerFactory<BudgetRepository>(
+      () => BudgetRepositoryImpl(serviceLocator()),
+    )
     ..registerFactory(() => MakeBudgetDraft(serviceLocator()))
     ..registerFactory(() => SaveBudgetPlan(serviceLocator()))
     ..registerFactory(() => BudgetPlanCubit(serviceLocator(), serviceLocator()))
     ..registerFactory(() => BudgetDraftCubit(serviceLocator()))
     ..registerFactory(() => BudgetSaveCubit(serviceLocator()));
 }
-
-
-
