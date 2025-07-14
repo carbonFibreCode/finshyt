@@ -9,10 +9,12 @@ import 'package:finshyt/Features/auth/domain/useCases/user_password_reset.dart';
 import 'package:finshyt/Features/auth/domain/useCases/user_sign_up.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
+@lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignUp _userSignUp;
   final UserLogin _userLogin;

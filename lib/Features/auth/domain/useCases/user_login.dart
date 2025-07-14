@@ -3,7 +3,9 @@ import 'package:finshyt/core/usecase/usecase.dart';
 import 'package:finshyt/core/entities/user.dart';
 import 'package:finshyt/Features/auth/domain/repository/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:injectable/injectable.dart';
 
+@injectable
 class UserLogin implements Usecase<User, UserLoginParams> {
   final AuthRepository authRepository;
   UserLogin( this.authRepository);

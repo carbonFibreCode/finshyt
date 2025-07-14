@@ -2,7 +2,7 @@ import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:finshyt/core/constants/app_colors.dart';
 import 'package:finshyt/core/constants/app_strings.dart';
 import 'package:finshyt/core/constants/app_text_styles.dart';
-import 'package:finshyt/Features/homepage/homeScreen/home_page.dart';
+import 'package:finshyt/Features/homepage/presentation/home_page.dart';
 import 'package:finshyt/core/utility/dialogs/showErrorDialog.dart';
 import 'package:finshyt/core/utility/loadingOverlay/loading_screen.dart';
 import 'package:finshyt/core/widgets/common/snackbar.dart';

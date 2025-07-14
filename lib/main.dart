@@ -1,11 +1,11 @@
-
 import 'package:finshyt/core/constants/app_colors.dart';
 import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
+import 'package:finshyt/core/services/injections_container.dart';
 import 'package:finshyt/init_dependencies.dart';
 import 'package:finshyt/core/routes/routes.dart';
 import 'package:finshyt/Features/auth/presentation/screens/auth/auth_screen.dart';
 import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:finshyt/Features/homepage/homeScreen/home_page.dart';
+import 'package:finshyt/Features/homepage/presentation/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,12 +14,14 @@ import 'package:google_fonts/google_fonts.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  await initDependencies();
+  configureDependencies();
   runApp(
-
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => serviceLocator<AuthBloc>()..add(AuthEventIsUserLoggedIn())),
+        BlocProvider(
+          create: (_) =>
+              serviceLocator<AuthBloc>()..add(AuthEventIsUserLoggedIn()),
+        ),
         BlocProvider(create: (_) => serviceLocator<AppUserCubit>()),
       ],
 
@@ -33,7 +35,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'FinShyt',
       theme: ThemeData(
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.primary,
         useMaterial3: true,
       ),
-      initialRoute: '/',                  
+      initialRoute: '/',
       onGenerateRoute: RouteGenerator.generate,
       debugShowCheckedModeBanner: false,
 
@@ -84,11 +85,8 @@ class _NavigationHandlerState extends State<NavigationHandler> {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocConsumer<AppUserCubit, AppUserState>(
-      listener: (context, state) {
-
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         if (state is AppUserLoggedIn) {
           return const HomePage();

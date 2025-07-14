@@ -1,5 +1,6 @@
 import 'package:finshyt/core/error/exceptions.dart';
 import 'package:finshyt/Features/auth/data/model/user_model.dart';
+import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract interface class AuthRemoteDataSource {
@@ -19,6 +20,7 @@ abstract interface class AuthRemoteDataSource {
   Future<UserModel?> getCurrentUserData();
 }
 
+@LazySingleton(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final SupabaseClient supabaseClient;
   AuthRemoteDataSourceImpl(this.supabaseClient);

@@ -4,8 +4,10 @@ import 'package:finshyt/Features/auth/data/dataSources/auth_remote_data_sources.
 import 'package:finshyt/core/entities/user.dart';
 import 'package:finshyt/Features/auth/domain/repository/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
+@LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   const AuthRepositoryImpl(this.remoteDataSource);
