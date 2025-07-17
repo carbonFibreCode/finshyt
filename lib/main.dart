@@ -1,11 +1,14 @@
+import 'package:finshyt/Features/ai_budget_planning/presentation/cubits/budget_planner_cubit.dart';
+import 'package:finshyt/Features/homepage/presentation/cubits/homepage_cubit.dart';
 import 'package:finshyt/core/constants/app_colors.dart';
 import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
-import 'package:finshyt/core/services/injections_container.dart';
+import 'package:finshyt/core/cubits/budget_cubit/active_budget_cubit.dart';
 import 'package:finshyt/init_dependencies.dart';
 import 'package:finshyt/core/routes/routes.dart';
 import 'package:finshyt/Features/auth/presentation/screens/auth/auth_screen.dart';
 import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:finshyt/Features/homepage/presentation/home_page.dart';
+import 'package:finshyt/my_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,7 +17,8 @@ import 'package:google_fonts/google_fonts.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
-  configureDependencies();
+  await initDependencies();
+  Bloc.observer = MyBlocObserver();
   runApp(
     MultiBlocProvider(
       providers: [
@@ -23,6 +27,9 @@ Future<void> main() async {
               serviceLocator<AuthBloc>()..add(AuthEventIsUserLoggedIn()),
         ),
         BlocProvider(create: (_) => serviceLocator<AppUserCubit>()),
+        BlocProvider(create: (_) => serviceLocator<HomepageCubit>()),
+        BlocProvider(create: (_) => serviceLocator<BudgetPlannerCubit>()),
+        BlocProvider(create: (_) => serviceLocator<ActiveBudgetCubit>()),
       ],
 
       child: const MyApp(),

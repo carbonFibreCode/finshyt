@@ -1,22 +1,20 @@
-
 import 'dart:developer';
 
-import 'package:finshyt/core/utility/loadingOverlay/loading_screen.dart';
+import 'package:finshyt/Features/ai_budget_planning/presentation/planning/planning_screen.dart';
+import 'package:finshyt/Features/update_budget/presentation/services/location_service.dart';
+import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:finshyt/core/constants/app_colors.dart';
 import 'package:finshyt/core/constants/app_dimensions.dart';
-import 'package:finshyt/init_dependencies.dart';
-
 import 'package:finshyt/core/widgets/common/custom_button.dart';
 import 'package:finshyt/core/widgets/common/custom_text_field.dart';
 import 'package:finshyt/core/widgets/common/snackbar.dart';
-import 'package:finshyt/Features/update_budget/presentation/services/location_service.dart/location_service.dart';
 
 class UpdateBudget extends StatelessWidget {
   const UpdateBudget({super.key, required this.userId});
+
   final String userId;
 
   @override
@@ -52,6 +50,7 @@ class UpdateBudget extends StatelessWidget {
 
 class _Form extends StatefulWidget {
   const _Form({required this.userId});
+
   final String userId;
 
   @override
@@ -61,7 +60,6 @@ class _Form extends StatefulWidget {
 class _FormState extends State<_Form> {
   final budgetCtl = TextEditingController();
   final descriptionCtl = TextEditingController();
-
   DateTime? eventDate;
   String? city;
 
@@ -147,6 +145,15 @@ class _FormState extends State<_Form> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  _label('Location'),
+                  Text(
+                    city ?? 'Fetching...',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppColors.primary,
+                    ),
+                  ),
                   const SizedBox(height: 24),
                   CustomButton(
                     text: 'Save Budget',
@@ -155,7 +162,7 @@ class _FormState extends State<_Form> {
                     borderRadius: 16,
                     icon: Icons.save,
                     iconColor: AppColors.background,
-                    onPressed: _submit,
+                    onPressed: () => _submit(context),
                   ),
                 ],
               ),
@@ -181,8 +188,7 @@ class _FormState extends State<_Form> {
     if (picked != null) setState(() => eventDate = picked);
   }
 
-
-  void _submit() {
+  void _submit(BuildContext context) {
     final amount = double.tryParse(budgetCtl.text.trim()) ?? 0;
     final desc = descriptionCtl.text.trim();
 
@@ -190,7 +196,35 @@ class _FormState extends State<_Form> {
       showSnackBar(context, 'Enter a valid budget amount');
       return;
     }
+    if (eventDate == null) {
+      showSnackBar(context, 'Select an event date');
+      return;
+    }
+    if (city == null) {
+      showSnackBar(context, 'Location not available');
+      return;
+    }
 
-    log(desc);
+    log(
+      'Saving budget: $amount, Description: $desc, Date: $eventDate, City: $city',
+    );
+
+    // Redirect to PlanningScreen, passing data
+    final userId = context.read<AppUserCubit>().currentUser?.id;
+    if (userId == null)
+      showSnackBar(context, "Login to save Budget");
+    else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => PlanningScreen(
+            userId: userId,
+            monthlyBudget: amount,
+            description: desc,
+            eventDate: eventDate!,
+            city: city!,
+          ),
+        ),
+      );
+    }
   }
 }

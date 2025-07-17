@@ -1,24 +1,18 @@
-// lib/Features/home/presentation/home_page.dart
+import 'dart:developer';
+
+import 'package:finshyt/Features/homepage/presentation/cubits/homepage_cubit.dart';
+import 'package:finshyt/Features/homepage/presentation/widgets/dashboard_info.dart';
+import 'package:finshyt/Features/homepage/presentation/widgets/homepage_insight_cards.dart';
+import 'package:finshyt/Features/insights/presentation/all_insights.dart';
+import 'package:finshyt/core/constants/app_colors.dart';
+import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
 import 'package:finshyt/core/models/chart_data_models.dart';
+import 'package:finshyt/features/homepage/presentation/widgets/chart.dart';
+import 'package:finshyt/features/homepage/presentation/widgets/homepage_row.dart';
+import 'package:finshyt/init_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
-
-import 'package:finshyt/Features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
-import 'package:finshyt/Features/insights/presentation/insightsCubit/insight_cubit.dart';
-import 'package:finshyt/init_dependencies.dart';
-
-import 'package:finshyt/core/constants/app_colors.dart';
-import 'package:finshyt/core/constants/app_dimensions.dart';
-import 'package:finshyt/core/utility/loadingOverlay/loading_screen.dart';
-import 'package:finshyt/Features/homepage/presentation/widgets/homepage_row.dart';
-import 'package:finshyt/Features/homepage/presentation/widgets/dashboard_info.dart';
-import 'package:finshyt/Features/homepage/presentation/widgets/chart.dart';
-
-import 'package:finshyt/Features/insights/presentation/all_insights.dart';
-import 'package:finshyt/Features/insights/presentation/widgets/all_insights/insight_cards.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,184 +22,105 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _hasLoaded = false;
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final userId = context.watch<AppUserCubit>().currentUser?.id;
+    if (userId != null && mounted && !_hasLoaded) {
+      context.read<HomepageCubit>().loadInsights(userId);
+      log('Reloaded homepage insights on dependency change'); 
+      _hasLoaded = true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthLoading) {
-          LoadingScreen().show(context: context, text: 'Just a moment');
-        } else {
-          LoadingScreen().hide();
-        }
-      },
-      child: Builder(
-        builder: (ctx) {
-          final userId = ctx.read<AppUserCubit>().currentUser?.id;
-          if (userId == null) {
-            return const Scaffold(body: Center(child: Text('Please log in')));
-          }
+    final userId = context.watch<AppUserCubit>().currentUser?.id;
 
-          return FutureBuilder<DateTime?>(
-            future: _getLatestBudgetStartDate(userId),
-            builder: (c, snap) {
-              if (snap.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              }
+    if (userId == null) {
+      return const Scaffold(
+        body: Center(child: Text('Please log in to continue.')),
+      );
+    }
 
-              final cycleStart = snap.data; 
-
-              return BlocProvider<InsightsCubit>(
-                create: (_) =>
-                    serviceLocator<InsightsCubit>()
-                      ..load(userId, startDate: cycleStart),
-                child: Scaffold(
-                  body: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.edgePadding,
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const HomepageRow(),
-                          const SizedBox(height: 0),
-                          const DashboardInfo(),
-                          const SizedBox(height: 20),
-
-
-                          BlocBuilder<InsightsCubit, InsightsState>(
-                            builder: (_, state) {
-                              if (state is! InsightsLoaded) {
-                                return const SizedBox(
-                                  height: 220,
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-
-                              final chart = state.chart;
-                              final maxY =
-                                  chart.fold<double>(
-                                    0,
-                                    (m, c) =>
-                                        m <
-                                            (c.primaryValue >
-                                                    (c.secondaryValue ?? 0)
-                                                ? c.primaryValue
-                                                : (c.secondaryValue ?? 0))
-                                        ? (c.primaryValue >
-                                                  (c.secondaryValue ?? 0)
-                                              ? c.primaryValue
-                                              : (c.secondaryValue ?? 0))
-                                        : m,
-                                  ) +
-                                  20;
-
-                              return Chart(
-                                data: chart,
-                                chartType: ChartType.doubleBar,
-                                maxY: maxY,
-                                title1: 'Spent',
-                                title2: 'Budget',
-                                primaryColor: AppColors.warnings,
-                                secondaryColor: AppColors.secondary,
-                              );
-                            },
-                          ),
-
-                          const SizedBox(height: 8),
-
-
-                          BlocBuilder<InsightsCubit, InsightsState>(
-                            builder: (_, state) {
-                              if (state is! InsightsLoaded) {
-                                return const SizedBox();
-                              }
-
-                              final balance =
-                                  state.totalBudget - state.totalSpent;
-                              final avg = state.days.isEmpty
-                                  ? 0.0
-                                  : state.totalSpent / state.days.length;
-
-                              return InsightCards(
-                                mainTitle: 'Total Expense',
-                                totalExpense: state.totalSpent,
-                                balance: balance,
-                                avgSpend: avg,
-                                monthlyBudget: state.totalBudget,
-                              );
-                            },
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          GestureDetector(
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const AllInsights(),
-                              ),
+    return BlocProvider<HomepageCubit>(
+      create: (_) => serviceLocator<HomepageCubit>()..loadInsights(userId),
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            context.read<HomepageCubit>().loadInsights(userId);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  const HomepageRow(),
+                  const SizedBox(height: 16),
+                  BlocBuilder<HomepageCubit, HomepageState>(
+                    builder: (context, state) {
+                      if (state is HomepageLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state is HomepageFailure) {
+                        return Center(child: Text('Error: ${state.message}'));
+                      }
+                      if (state is HomepageLoaded) {
+                        return Column(
+                          children: [
+                            DashboardInfo(insights: state.insights),
+                            const SizedBox(height: 20),
+                            Chart(
+                              data: state.insights.chartData,
+                              chartType: ChartType.doubleBar,
+                              maxY: _getMaxY(state.insights.chartData),
+                              title1: 'Spent',
+                              title2: 'Budget',
+                              primaryColor: AppColors.warnings,
                             ),
-                            child: Column(
-                              children: [
-                                const Icon(
-                                  Icons.navigate_next_rounded,
-                                  color: AppColors.background,
-                                  size: 60,
-                                ),
-                                Text(
-                                  'Show All Insights',
-                                  style: GoogleFonts.inter(
-                                    color: AppColors.background,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                            const SizedBox(height: 8),
+                            InsightCards(insights: state.insights),
+                          ],
+                        );
+                      }
+                      return const Center(child: Text('No data available.'));
+                    },
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder:(context) => const AllInsights(),));
+                    },
+                    icon: Icon(
+                      Icons.chevron_right_sharp,
+                      color: AppColors.background,
+                      size: 36,
                     ),
                   ),
-                ),
-              );
-            },
-          );
-        },
+                  Text(
+                    "Show All Insights",
+                    style: GoogleFonts.inter(color: AppColors.background),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
 
-
-  Future<DateTime?> _getLatestBudgetStartDate(String userId) async {
-  final sb = serviceLocator<SupabaseClient>();
-
-  // Step 1: Find the latest group by the most recent date
-  final latestGroupRows = await sb
-      .from('daily_budget')
-      .select('budget_group_id, date')
-      .eq('user_id', userId)
-      .order('date', ascending: false)
-      .limit(1);
-
-  if (latestGroupRows.isEmpty) return null;
-
-  final latestGroupId = latestGroupRows.first['budget_group_id'] as String;
-
-  // Step 2: Find the earliest date in that latest group
-  final earliestInGroup = await sb
-      .from('daily_budget')
-      .select('date')
-      .eq('user_id', userId)
-      .eq('budget_group_id', latestGroupId)
-      .order('date', ascending: true)
-      .limit(1);
-
-  if (earliestInGroup.isEmpty) return null;
-
-  return DateTime.parse(earliestInGroup.first['date'] as String);
-}
-
+  double _getMaxY(List<ChartData> data) {
+    if (data.isEmpty) return 20;
+    return data.fold<double>(0.0, (max, item) {
+          final currentMax = item.primaryValue > (item.secondaryValue ?? 0)
+              ? item.primaryValue
+              : (item.secondaryValue ?? 0);
+          return currentMax > max ? currentMax : max;
+        }) +
+        20;
+  }
 }

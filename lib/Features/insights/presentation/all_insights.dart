@@ -1,3 +1,5 @@
+import 'package:finshyt/Features/insights/domain/entity/insights_entity.dart';
+import 'package:finshyt/Features/insights/presentation/cubits/insights_cubit.dart';
 import 'package:finshyt/core/constants/app_colors.dart';
 import 'package:finshyt/core/constants/app_dimensions.dart';
 import 'package:finshyt/core/constants/app_text_styles.dart';
@@ -38,8 +40,10 @@ class AllInsights extends StatelessWidget {
           if (userId == null) {
             return const Center(child: Text('Please log in first'));
           }
-
-          return const _InsightsBody();
+          return BlocProvider(
+            create: (_) => serviceLocator<InsightsCubit>()..fetchInsights(userId),
+            child: const _InsightsBody(),
+          );
         },
       ),
     );
@@ -51,50 +55,51 @@ class _InsightsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-
-        return ListView.separated(
-          padding: const EdgeInsets.all(AppDimensions.edgePadding),
-          itemCount: 2 + s.days.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 16),
-          itemBuilder: (context, idx) {
-            if (idx == 0) {
-              return Chart(
-                data: s.chart,
-                chartType: ChartType.doubleBar,
-                maxY: _maxY(s.chart),
-                title1: 'Spent',
-                title2: 'Budget',
-                primaryColor: AppColors.warnings,
-                secondaryColor: AppColors.secondary,
-              );
-            }
-
-            if (idx == 1) {
-              final balance = s.totalBudget - s.totalSpent;
-              final avgPerDay = s.days.isEmpty ? 0.0 : s.totalSpent / s.days.length;
-
-              return InsightCards(
-                mainTitle: 'Total Expense',
-                totalExpense: s.totalSpent,
-                balance: balance,
-                avgSpend: avgPerDay,
-                monthlyBudget: s.totalBudget,
-              );
-            }
-
-            final g = s.days[idx - 2];
-            return _DayTile(group: g);
-          },
-        );
-      }
+    return BlocBuilder<InsightsCubit, InsightsState>(
+      builder: (context, state) {
+        if (state is InsightsLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is InsightsFailure) {
+          return Center(child: Text('Error: ${state.message}'));
+        }
+        if (state is InsightsLoaded) {
+          return ListView.separated(
+            padding: const EdgeInsets.all(AppDimensions.edgePadding),
+            itemCount: 2 + state.insights.dailyGroups.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            itemBuilder: (context, idx) {
+              if (idx == 0) {
+                return Chart(
+                  data: state.insights.chartData,
+                  chartType: ChartType.doubleBar,
+                  maxY: _maxY(state.insights.chartData),
+                  title1: 'Spent',
+                  title2: 'Budget',
+                  primaryColor: AppColors.warnings,
+                  secondaryColor: AppColors.secondary,
+                );
+              }
+              if (idx == 1) {
+                return InsightCards(insights: state.insights);
+              }
+              final g = state.insights.dailyGroups[idx - 2];
+              return _DayTile(group: g);
+            },
+          );
+        }
+        return const Center(child: Text('No insights available'));
+      },
+    );
   }
 
   double _maxY(List<ChartData> d) =>
-      d.fold<double>(0, (m, c) => m < c.primaryValue ? c.primaryValue : m) + 20;
+      d.fold(0.0, (m, c) => m < c.primaryValue ? c.primaryValue : m) + 20;
+}
 
 class _DayTile extends StatelessWidget {
   const _DayTile({required this.group});
+
   final DailyExpenseGroup group;
 
   @override
@@ -120,8 +125,8 @@ class _DayTile extends StatelessWidget {
             ...group.items.map(
               (e) => ListTile(
                 dense: true,
-                title: Text(e.purpose),
-                subtitle: Text(DateFormat.Hm().format(e.ts)),
+                title: Text(e.description), // Updated from 'purpose' to 'description' based on entity
+                subtitle: Text(DateFormat.Hm().format(e.expenseDate)), // Updated from 'ts' to 'expenseDate'
                 trailing: Text(e.amount.toStringAsFixed(0)),
               ),
             ),

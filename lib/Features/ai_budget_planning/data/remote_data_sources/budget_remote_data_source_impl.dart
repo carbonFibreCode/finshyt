@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:finshyt/Features/ai_budget_planning/data/remote_data_sources/budget_remote_data_source.dart';
 import 'package:finshyt/Features/ai_budget_planning/domain/entities/budget.dart';
@@ -12,15 +13,19 @@ class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
 
   BudgetRemoteDataSourceImpl(this._supabaseClient)
     : _groq = Groq(
-        apiKey: dotenv.env['GROQ_KEY'] ?? '',
+        apiKey: dotenv.env['GROQ_API_KEY'] ?? '',
         model: 'llama3-70b-8192',
       ) {
+    final apiKey = dotenv.env['GROQ_API_KEY'];
     if (dotenv.env['GROQ_API_KEY'] == null ||
         dotenv.env['GROQ_API_KEY']!.isEmpty) {
       throw Exception(
         'GROQ_API_KEY not found in .env file. Please ensure it is set.',
       );
     }
+    log(
+      'Groq API initialized with key: ${apiKey!.substring(0, 5)}... (redacted)',
+    );
     // Start a chat session when the data source is initialized.
     _groq.startChat();
   }
@@ -45,11 +50,12 @@ Do not include any introductory text, explanations, or code block markers in you
 
     // Construct the user's request as a single, clear prompt.
     String userPrompt =
-        'Generate a 30-day budget plan for a total monthly budget of \$${monthlyBudget.toStringAsFixed(2)} for a user in ${city ?? "New Delhi"}.';
+        'Generate a 30-day budget plan starting from ${eventDate?.subtract(const Duration(days: 15)).toIso8601String().substring(0, 10) ?? DateTime.now().toIso8601String().substring(0, 10)} '
+        'for a total monthly budget of \$${monthlyBudget.toStringAsFixed(2)} for a user in ${city ?? "New Delhi"}.';
     userPrompt += '\nDescription of spending habits: "$description"';
     if (eventDate != null) {
       userPrompt +=
-          '\nConsider a special event around this date: ${eventDate.toIso8601String().substring(0, 10)}.';
+          '\nConsider a special event on this date: ${eventDate.toIso8601String().substring(0, 10)} and allocate extra budget around it.';
     }
 
     try {
@@ -57,6 +63,8 @@ Do not include any introductory text, explanations, or code block markers in you
       final GroqResponse response = await _groq.sendMessage(userPrompt);
 
       final content = response.choices.first.message.content;
+
+      log('Groq API raw response: $content');
 
       final jsonResponse = jsonDecode(content) as Map<String, dynamic>;
       final planList = jsonResponse['plan'] as List<dynamic>;
@@ -71,8 +79,10 @@ Do not include any introductory text, explanations, or code block markers in you
         );
       }).toList();
     } on GroqException catch (e) {
+      log('Groq API exception: ${e.message}');
       throw Exception('Groq API error: ${e.message}');
     } catch (e) {
+      log('Budget plan generation error: $e');
       throw Exception('Failed to generate or parse budget plan: $e');
     }
   }
@@ -91,7 +101,9 @@ Do not include any introductory text, explanations, or code block markers in you
           'amount': item.amount,
         };
       }).toList();
-
+      log(
+        'Calling RPC with params: userId=$userId, startDate=${startDate.toIso8601String().substring(0, 10)}, items=${budgetItemsJson.length}',
+      );
       await _supabaseClient.rpc(
         'save_budget_plan_transaction',
         params: {
@@ -101,6 +113,7 @@ Do not include any introductory text, explanations, or code block markers in you
         },
       );
     } on PostgrestException catch (e) {
+      log('Supabase RPC error: ${e.message}, details: ${e.details}'); 
       throw Exception('Database error while saving plan: ${e.message}');
     } catch (e) {
       throw Exception('An unexpected error occurred while saving the plan: $e');

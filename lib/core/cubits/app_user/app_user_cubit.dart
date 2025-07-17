@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:finshyt/core/cubits/budget_cubit/active_budget_cubit.dart';
 import 'package:finshyt/core/entities/user.dart';
+import 'package:finshyt/init_dependencies.dart';
 
 part 'app_user_state.dart';
 
@@ -14,6 +16,7 @@ class AppUserCubit extends Cubit<AppUserState> {
       emit(AppUserInitial());
     } else {
       emit(AppUserLoggedIn(user));
+      serviceLocator<ActiveBudgetCubit>().loadActiveBudgetId();
     }
   }
 }
