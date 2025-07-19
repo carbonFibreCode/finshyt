@@ -151,7 +151,7 @@ class _LoginCardState extends State<LoginCard> {
                 child: GestureDetector(
                   onTap: () {
                     context.read<AuthBloc>().add(
-                      // ← FIXED
+                      
                       const AuthEventNavigateToPasswordReset(),
                     );
                   },
@@ -174,7 +174,7 @@ class _LoginCardState extends State<LoginCard> {
                     final email = _usernameController.text;
                     final password = _passwordController.text;
                     context.read<AuthBloc>().add(
-                      // ← FIXED
+                      
                       AuthEventLogin(email: email, password: password),
                     );
                   },

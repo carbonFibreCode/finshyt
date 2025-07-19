@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:finshyt/Features/ai_budget_planning/presentation/planning/planning_screen.dart';
 import 'package:finshyt/Features/update_budget/presentation/services/location_service.dart';
 import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
+import 'package:finshyt/core/utility/loadingOverlay/loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -180,6 +181,7 @@ class _FormState extends State<_Form> {
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
+
       context: context,
       initialDate: eventDate ?? DateTime.now(),
       firstDate: DateTime.now().subtract(const Duration(days: 365)),
@@ -204,12 +206,8 @@ class _FormState extends State<_Form> {
       showSnackBar(context, 'Location not available');
       return;
     }
-
-    log(
-      'Saving budget: $amount, Description: $desc, Date: $eventDate, City: $city',
-    );
-
-    // Redirect to PlanningScreen, passing data
+    
+    LoadingScreen().show(context: context, text: 'Generating AI Plan...');
     final userId = context.read<AppUserCubit>().currentUser?.id;
     if (userId == null)
       showSnackBar(context, "Login to save Budget");

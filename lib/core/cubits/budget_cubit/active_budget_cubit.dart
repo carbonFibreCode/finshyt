@@ -1,5 +1,3 @@
-// core/cubits/active_budget/active_budget_cubit.dart
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
@@ -45,8 +43,7 @@ class ActiveBudgetCubit extends Cubit<ActiveBudgetState> {
       }
       emit(ActiveBudgetLoaded(budgetId));
     } catch (e) {
-      log('Error loading active budget: $e');
-      emit(ActiveBudgetInitial()); // Fallback to initial (null)
+      emit(ActiveBudgetInitial());
     }
   }
   

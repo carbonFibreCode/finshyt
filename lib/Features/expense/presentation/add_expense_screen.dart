@@ -54,7 +54,7 @@ class AddExpense extends StatelessWidget {
 }
 
 class _Form extends StatefulWidget {
-  // No longer needs userId.
+  
   const _Form();
 
   @override
@@ -84,13 +84,13 @@ class _FormState extends State<_Form> {
         }
       },
       child: Center(
-        heightFactor: 2,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'Did you spend wisely ?',
               style: GoogleFonts.inter(
-                color: AppColors.primary,
+                color: AppColors.background,
                 fontSize: 32,
                 fontWeight: FontWeight.w600,
               ),
@@ -163,7 +163,7 @@ class _FormState extends State<_Form> {
   }
 
   void _submit() {
-    // Get the current user from the AppUserCubit.
+    
     final user = context.read<AppUserCubit>().currentUser;
     if (user == null) {
       showSnackBar(context, 'You must be logged in to add an expense.');
@@ -178,16 +178,14 @@ class _FormState extends State<_Form> {
     } else if (amt <= 0) {
       showSnackBar(context, 'Please enter a valid amount');
     } else {
-      log('Adding expense for user: ${user.id}');
 
       final currentBudgetId = context.read<ActiveBudgetCubit>().activeBudgetId;
 
       if (currentBudgetId == null) {
-        log('No active budget found');
       }
 
       final params = AddExpenseParams(
-        userId: user.id, // Use the ID from the cubit.
+        userId: user.id, 
         budgetId: currentBudgetId,
         amount: amt,
         description: prp,
@@ -195,7 +193,6 @@ class _FormState extends State<_Form> {
       );
       context.read<ExpenseCubit>().addExpense(params);
       context.read<HomepageCubit>().loadInsights(user.id);
-      log('Reloaded homepage after adding expense');
     }
   }
 }

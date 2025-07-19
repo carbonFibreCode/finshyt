@@ -8,10 +8,9 @@ class ExpenseCubit extends Cubit<ExpenseState> {
   final AddExpense _addExpense;
 
   ExpenseCubit({required AddExpense addExpense})
-      : _addExpense = addExpense,
-        super(ExpenseInitial());
+    : _addExpense = addExpense,
+      super(ExpenseInitial());
 
-  /// Adds a new expense by executing the use case.
   Future<void> addExpense(AddExpenseParams params) async {
     emit(ExpenseLoading());
     final result = await _addExpense(params);

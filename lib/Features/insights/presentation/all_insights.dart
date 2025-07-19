@@ -58,7 +58,7 @@ class _InsightsBody extends StatelessWidget {
     return BlocBuilder<InsightsCubit, InsightsState>(
       builder: (context, state) {
         if (state is InsightsLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: AppColors.background,),);
         }
         if (state is InsightsFailure) {
           return Center(child: Text('Error: ${state.message}'));
@@ -125,8 +125,8 @@ class _DayTile extends StatelessWidget {
             ...group.items.map(
               (e) => ListTile(
                 dense: true,
-                title: Text(e.description), // Updated from 'purpose' to 'description' based on entity
-                subtitle: Text(DateFormat.Hm().format(e.expenseDate)), // Updated from 'ts' to 'expenseDate'
+                title: Text(e.description), 
+                subtitle: Text(DateFormat.Hm().format(e.expenseDate)), 
                 trailing: Text(e.amount.toStringAsFixed(0)),
               ),
             ),

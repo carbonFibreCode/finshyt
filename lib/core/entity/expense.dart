@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class Expense extends Equatable {
   final String id;
   final String userId;
-  final String? budgetId; // can be null if an expense isn't tied to a budget
+  final String? budgetId; 
   final double amount;
   final String description;
   final DateTime expenseDate;

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:finshyt/Features/ai_budget_planning/domain/entities/budget.dart';
 import 'package:finshyt/Features/ai_budget_planning/domain/usecases/generate_budget_plan.dart';
 import 'package:finshyt/Features/ai_budget_planning/domain/usecases/save_budget_plan.dart';
@@ -9,7 +7,6 @@ import 'package:finshyt/Features/ai_budget_planning/presentation/planning/widget
 import 'package:finshyt/Features/homepage/presentation/cubits/homepage_cubit.dart';
 import 'package:finshyt/core/constants/app_colors.dart';
 import 'package:finshyt/core/constants/app_dimensions.dart';
-import 'package:finshyt/core/cubits/app_user/app_user_cubit.dart';
 import 'package:finshyt/core/cubits/budget_cubit/active_budget_cubit.dart';
 import 'package:finshyt/core/models/chart_data_models.dart';
 import 'package:finshyt/core/utility/loadingOverlay/loading_screen.dart';
@@ -87,28 +84,22 @@ class _PlanningScreenState extends State<PlanningScreen> {
                 ),
               );
               context.read<ActiveBudgetCubit>().loadActiveBudgetId();
-              log('Refreshed ActiveBudgetCubit after budget save'); // Debug log
-              await Future.delayed(
-                const Duration(milliseconds: 500),
-              ); // Existing delay
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              // Delay navigation to ensure async completion and avoid race conditions.
+
               await Future.delayed(const Duration(milliseconds: 500));
               Navigator.of(context).popUntil((route) => route.isFirst);
             } else if (state is BudgetPlannerFailure) {
               LoadingScreen().hide();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('An error occurred: ${state.message}'),
+                  content: Text('An error occurred: ${state.message}',),
                   backgroundColor: Colors.red,
                 ),
               );
+            } else if (state is BudgetPlannerSuccess) {
+              LoadingScreen().hide();
             }
           },
           builder: (context, state) {
-            log(
-              'BlocConsumer rebuilding with state: $state',
-            ); // Debug log for rebuilds
             if (state is BudgetPlannerLoading) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -124,19 +115,21 @@ class _PlanningScreenState extends State<PlanningScreen> {
               );
             }
             if (state is BudgetPlannerSuccess) {
-              log('Rendering plan content with ${state.items.length} items');
-              // Once the plan is successfully generated, display it.
               return _buildPlanContent(context, state.items);
             }
-            // Initial state or other unhandled states.
-            return const Center(child: Text('Generating your budget plan...'));
+
+            return const Center(
+              child: Text(
+                'Generating your budget plan...',
+                style: TextStyle(color: AppColors.background),
+              ),
+            );
           },
         ),
       ),
     );
   }
 
-  // Extracted the main content into a separate method for clarity (no nested Scaffold).
   Widget _buildPlanContent(BuildContext context, List<BudgetItem> planItems) {
     final bars = planItems
         .map(
@@ -188,7 +181,6 @@ class _PlanningScreenState extends State<PlanningScreen> {
               style: GoogleFonts.inter(color: AppColors.background),
             ),
             onPressed: () {
-              log('Clicked Approve and saved');
               context.read<BudgetPlannerCubit>().savePlan(
                 SaveBudgetPlanParams(
                   userId: widget.userId,

@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
     final userId = context.watch<AppUserCubit>().currentUser?.id;
     if (userId != null && mounted && !_hasLoaded) {
       context.read<HomepageCubit>().loadInsights(userId);
-      log('Reloaded homepage insights on dependency change'); 
       _hasLoaded = true;
     }
   }
@@ -60,14 +59,13 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   const HomepageRow(),
-                  const SizedBox(height: 16),
                   BlocBuilder<HomepageCubit, HomepageState>(
                     builder: (context, state) {
                       if (state is HomepageLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator(color: AppColors.background,));
                       }
                       if (state is HomepageFailure) {
-                        return Center(child: Text('Error: ${state.message}'));
+                        return Center(child: Text('Error: ${state.message}', style: TextStyle(color: AppColors.background),));
                       }
                       if (state is HomepageLoaded) {
                         return Column(
@@ -81,8 +79,9 @@ class _HomePageState extends State<HomePage> {
                               title1: 'Spent',
                               title2: 'Budget',
                               primaryColor: AppColors.warnings,
+                              secondaryColor: AppColors.secondary,
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 16),
                             InsightCards(insights: state.insights),
                           ],
                         );
@@ -90,6 +89,7 @@ class _HomePageState extends State<HomePage> {
                       return const Center(child: Text('No data available.'));
                     },
                   ),
+                  const SizedBox(height: 20,),
                   IconButton(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder:(context) => const AllInsights(),));

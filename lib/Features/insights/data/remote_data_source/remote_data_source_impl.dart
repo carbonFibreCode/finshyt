@@ -13,7 +13,7 @@ class InsightsRemoteDataSourceImpl implements InsightsRemoteDataSource {
   @override
   Future<Insights> getAllInsights(String userId) async {
     try {
-      // Step 1: Fetch the latest budget for the user
+      
       final latestBudgetResponse = await _client
           .from('budgets')
           .select('id')
@@ -23,13 +23,13 @@ class InsightsRemoteDataSourceImpl implements InsightsRemoteDataSource {
           .maybeSingle();
 
       if (latestBudgetResponse == null) {
-        // No budget found, return empty insights
+        
         return InsightsModel.fromRawData(budgetItems: [], expenses: []);
       }
 
       final String latestBudgetId = latestBudgetResponse['id'] as String;
 
-      // Step 2: Fetch budget items and expenses for the latest budget
+      
       final responses = await Future.wait([
         _client.from('budget_items').select().eq('budget_id', latestBudgetId),
         _client.from('expenses').select().eq('budget_id', latestBudgetId),
@@ -38,7 +38,7 @@ class InsightsRemoteDataSourceImpl implements InsightsRemoteDataSource {
       final budgetItemsRaw = responses[0] as List<dynamic>;
       final expensesRaw = responses[1] as List<dynamic>;
 
-      // Step 3: Map raw data to models with proper typecasting
+      
       final List<BudgetItemModel> budgetItems = budgetItemsRaw
           .map((item) => BudgetItemModel.fromJson(item as Map<String, dynamic>))
           .toList();
@@ -47,7 +47,7 @@ class InsightsRemoteDataSourceImpl implements InsightsRemoteDataSource {
           .map((item) => ExpenseModel.fromJson(item as Map<String, dynamic>))
           .toList();
 
-      // Step 4: Use the factory constructor to process and return Insights
+      
       return InsightsModel.fromRawData(
         budgetItems: budgetItems,
         expenses: expenses,

@@ -3,12 +3,12 @@ part of 'active_budget_cubit.dart';
 
 sealed class ActiveBudgetState {}
 
-final class ActiveBudgetInitial extends ActiveBudgetState {} // No active budget (null)
+final class ActiveBudgetInitial extends ActiveBudgetState {}
 
 final class ActiveBudgetLoading extends ActiveBudgetState {}
 
 final class ActiveBudgetLoaded extends ActiveBudgetState {
-  final String? budgetId; // Null if not found
+  final String? budgetId;
 
   ActiveBudgetLoaded(this.budgetId);
 }

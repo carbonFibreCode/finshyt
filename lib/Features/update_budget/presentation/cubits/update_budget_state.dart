@@ -41,5 +41,13 @@ class UpdateBudgetState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [budget, description, eventDate, city, position, isLoading, errorMessage];
+  List<Object?> get props => [
+    budget,
+    description,
+    eventDate,
+    city,
+    position,
+    isLoading,
+    errorMessage,
+  ];
 }

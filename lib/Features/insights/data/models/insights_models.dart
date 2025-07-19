@@ -13,23 +13,20 @@ class InsightsModel extends Insights {
     required super.dailyGroups,
   });
 
-  /// Factory constructor to create InsightsModel from raw data (e.g., Supabase rows).
   factory InsightsModel.fromRawData({
     required List<BudgetItemModel> budgetItems,
     required List<ExpenseModel> expenses,
   }) {
-    // Calculate total budget
     final double totalBudget = budgetItems.fold(
       0.0,
       (sum, item) => sum + item.amount,
     );
 
-    // Group expenses by day
     final Map<DateTime, List<ExpenseModel>> expensesByDay = {};
     for (final expense in expenses) {
       final day = DateTime(
         expense.expenseDate.year,
-        expense.expenseDate.year,
+        expense.expenseDate.month,
         expense.expenseDate.day,
       );
       expensesByDay.putIfAbsent(day, () => []).add(expense);
@@ -49,7 +46,6 @@ class InsightsModel extends Insights {
       );
     }).toList();
 
-    // Calculate aggregates
     final double totalExpense = dailyGroups.fold(
       0.0,
       (sum, group) => sum + group.total,
@@ -59,15 +55,14 @@ class InsightsModel extends Insights {
         ? 0.0
         : totalExpense / dailyGroups.length;
 
-    // Create chart data
     final Map<DateTime, double> budgetMap = {
       for (var item in budgetItems) item.date: item.amount,
     };
     final List<ChartData> chartData = dailyGroups.map((group) {
       return ChartData(
         label: '${group.date.day}/${group.date.month}',
-        primaryValue: group.total, // Spent
-        secondaryValue: budgetMap[group.date] ?? 0.0, // Budget
+        primaryValue: group.total,
+        secondaryValue: budgetMap[group.date] ?? 0.0,
       );
     }).toList()..sort((a, b) => a.label.compareTo(b.label));
 

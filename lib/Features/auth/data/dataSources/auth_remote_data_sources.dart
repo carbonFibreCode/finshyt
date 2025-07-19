@@ -92,7 +92,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw ServerExceptions('User is already verified');
       }
 
-      //resending the email onfirmation
+      
       await supabaseClient.auth.resend(type: OtpType.signup, email: user.email);
     } catch (e) {
       throw ServerExceptions(

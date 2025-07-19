@@ -8,13 +8,13 @@ abstract class InsightsState extends Equatable {
   List<Object> get props => [];
 }
 
-/// Initial state before any data is fetched.
+
 class InsightsInitial extends InsightsState {}
 
-/// State when data is being fetched.
+
 class InsightsLoading extends InsightsState {}
 
-/// State when data is successfully loaded.
+
 class InsightsLoaded extends InsightsState {
   final Insights insights;
 
@@ -24,7 +24,7 @@ class InsightsLoaded extends InsightsState {
   List<Object> get props => [insights];
 }
 
-/// State when an error occurs during fetching.
+
 class InsightsFailure extends InsightsState {
   final String message;
 

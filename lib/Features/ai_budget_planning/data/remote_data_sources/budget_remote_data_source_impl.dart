@@ -16,21 +16,16 @@ class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
         apiKey: dotenv.env['GROQ_API_KEY'] ?? '',
         model: 'llama3-70b-8192',
       ) {
-    final apiKey = dotenv.env['GROQ_API_KEY'];
     if (dotenv.env['GROQ_API_KEY'] == null ||
         dotenv.env['GROQ_API_KEY']!.isEmpty) {
       throw Exception(
         'GROQ_API_KEY not found in .env file. Please ensure it is set.',
       );
     }
-    log(
-      'Groq API initialized with key: ${apiKey!.substring(0, 5)}... (redacted)',
-    );
-    // Start a chat session when the data source is initialized.
+
     _groq.startChat();
   }
 
-  /// Generates a budget plan using the Groq Cloud API with the Llama 3 70B model.
   @override
   Future<List<BudgetItem>> generateBudgetPlan({
     required double monthlyBudget,
@@ -38,33 +33,26 @@ class BudgetRemoteDataSourceImpl implements BudgetRemoteDataSource {
     DateTime? eventDate,
     String? city,
   }) async {
-    // A detailed system prompt to instruct the AI on its role and output format.
-    final systemPrompt = '''
+    final systemPrompt =
+        '''
 You are a financial planning assistant. Your task is to generate a 30-day daily budget plan based on the user's input.
 The output MUST be a valid JSON object with a single key "plan" which contains an array of 30 objects. Each object must contain two keys: "date" (in "YYYY-MM-DD" format) and "amount" (as a number).
-Do not include any introductory text, explanations, or code block markers in your response. Only output the raw JSON object.
+Do not include any introductory text, explanations, or code block markers in your response. Only output the raw JSON object,
+consider the event date if given, else consider today's date, sum of all budget should be <= $monthlyBudget. 
 ''';
 
-    // Set the instructions for this specific API call.
     _groq.setCustomInstructionsWith(systemPrompt);
 
-    // Construct the user's request as a single, clear prompt.
     String userPrompt =
-        'Generate a 30-day budget plan starting from ${eventDate?.subtract(const Duration(days: 15)).toIso8601String().substring(0, 10) ?? DateTime.now().toIso8601String().substring(0, 10)} '
+        'Generate a 30-day budget plan starting from tomorrow date considering this date for event described ${eventDate?.subtract(const Duration(days: 15)).toIso8601String().substring(0, 10)} '
         'for a total monthly budget of \$${monthlyBudget.toStringAsFixed(2)} for a user in ${city ?? "New Delhi"}.';
-    userPrompt += '\nDescription of spending habits: "$description"';
-    if (eventDate != null) {
-      userPrompt +=
-          '\nConsider a special event on this date: ${eventDate.toIso8601String().substring(0, 10)} and allocate extra budget around it.';
-    }
+    userPrompt +=
+        '\nDescription of important event (consider if given else plan for general expenses): "$description"';
 
     try {
-      // Send the message to the Groq API.
       final GroqResponse response = await _groq.sendMessage(userPrompt);
 
       final content = response.choices.first.message.content;
-
-      log('Groq API raw response: $content');
 
       final jsonResponse = jsonDecode(content) as Map<String, dynamic>;
       final planList = jsonResponse['plan'] as List<dynamic>;
@@ -79,15 +67,12 @@ Do not include any introductory text, explanations, or code block markers in you
         );
       }).toList();
     } on GroqException catch (e) {
-      log('Groq API exception: ${e.message}');
       throw Exception('Groq API error: ${e.message}');
     } catch (e) {
-      log('Budget plan generation error: $e');
       throw Exception('Failed to generate or parse budget plan: $e');
     }
   }
 
-  /// Saves a complete budget plan to Supabase using a transactional function.
   @override
   Future<void> saveBudgetPlan({
     required String userId,
@@ -101,9 +86,7 @@ Do not include any introductory text, explanations, or code block markers in you
           'amount': item.amount,
         };
       }).toList();
-      log(
-        'Calling RPC with params: userId=$userId, startDate=${startDate.toIso8601String().substring(0, 10)}, items=${budgetItemsJson.length}',
-      );
+
       await _supabaseClient.rpc(
         'save_budget_plan_transaction',
         params: {
@@ -113,7 +96,6 @@ Do not include any introductory text, explanations, or code block markers in you
         },
       );
     } on PostgrestException catch (e) {
-      log('Supabase RPC error: ${e.message}, details: ${e.details}'); 
       throw Exception('Database error while saving plan: ${e.message}');
     } catch (e) {
       throw Exception('An unexpected error occurred while saving the plan: $e');

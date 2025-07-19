@@ -13,9 +13,9 @@ class InsightsCubit extends Cubit<InsightsState> {
       : _getAllInsights = serviceLocator<GetAllInsights>(),
         super(InsightsInitial());
 
-  /// Fetches all insights for the given user ID.
-  ///
-  /// Emits loading, loaded, or failure states based on the result.
+  
+  
+  
   Future<void> fetchInsights(String userId) async {
     emit(InsightsLoading());
     final params = GetAllInsightsParams(userId: userId);

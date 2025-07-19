@@ -1,19 +1,21 @@
 import 'package:equatable/equatable.dart';
 import 'package:finshyt/core/entity/expense.dart';
-import 'package:finshyt/core/models/chart_data_models.dart'; 
-
+import 'package:finshyt/core/models/chart_data_models.dart';
 
 class DailyExpenseGroup extends Equatable {
   final DateTime date;
   final double total;
   final List<Expense> items;
 
-  const DailyExpenseGroup({required this.date, required this.total, required this.items});
+  const DailyExpenseGroup({
+    required this.date,
+    required this.total,
+    required this.items,
+  });
 
   @override
   List<Object?> get props => [date, total, items];
 }
-
 
 class HomepageInsights extends Equatable {
   final double totalBudget;
@@ -34,11 +36,11 @@ class HomepageInsights extends Equatable {
 
   @override
   List<Object?> get props => [
-        totalBudget,
-        totalSpent,
-        balance,
-        averageDailySpend,
-        chartData,
-        dailyExpenses,
-      ];
+    totalBudget,
+    totalSpent,
+    balance,
+    averageDailySpend,
+    chartData,
+    dailyExpenses,
+  ];
 }

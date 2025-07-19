@@ -4,10 +4,6 @@ import 'package:finshyt/core/usecase/usecase.dart';
 import 'package:finshyt/Features/insights/domain/entity/insights_entity.dart';
 import 'package:finshyt/Features/insights/domain/repository/repository.dart';
 
-/// Use case for fetching all insights for a user.
-///
-/// This class implements the Usecase interface, providing a structured and
-/// type-safe way to execute this specific business logic.
 class GetAllInsights implements Usecase<Insights, GetAllInsightsParams> {
   final InsightsRepository _repository;
 
@@ -24,10 +20,6 @@ class GetAllInsights implements Usecase<Insights, GetAllInsightsParams> {
   }
 }
 
-/// Parameters required for the GetAllInsights use case.
-///
-/// Encapsulating the `userId` in a dedicated class makes the use case signature
-/// clean and aligns with the generic Usecase interface.
 class GetAllInsightsParams {
   final String userId;
 

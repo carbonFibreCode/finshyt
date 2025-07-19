@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 class DayInsight extends StatelessWidget {
   const DayInsight({required this.item});
-  final BudgetItem item; // Changed from PlanItem to BudgetItem
+  final BudgetItem item; 
 
   @override
   Widget build(BuildContext context) {

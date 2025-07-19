@@ -27,11 +27,11 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // clculating dynamic width based on data length
+    
     double barWidth = chartType == ChartType.doubleBar ? 16 : 20;
     double spacing = 24;
     double minChartWidth =
-        MediaQuery.of(context).size.width - 48; // forcontainer padding
+        MediaQuery.of(context).size.width - 48; 
     double calculatedWidth =
         (data.length *
             (barWidth * (chartType == ChartType.doubleBar ? 2 : 1) + spacing)) +
@@ -157,7 +157,7 @@ class Chart extends StatelessWidget {
         ),
         BarChartRodData(
           toY: item.secondaryValue ?? 0,
-          color: secondaryColor ?? primaryColor,
+          color: secondaryColor,
           width: 8,
           borderRadius: BorderRadius.circular(4),
         ),

@@ -55,7 +55,7 @@ class _RegistrationCardState extends State<RegistrationCard> {
         if (state is AuthFailure) {
           LoadingScreen().hide();
           showSnackBar(context, 'Registration Failed', isError: true);
-          // rregistration successful - show success message
+          
         }
         if (state is AuthSuccess) {
           LoadingScreen().hide();
@@ -88,7 +88,7 @@ class _RegistrationCardState extends State<RegistrationCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header
+                
                 Center(
                   child: Text(
                     AppStrings.register,
@@ -97,7 +97,7 @@ class _RegistrationCardState extends State<RegistrationCard> {
                 ),
                 const SizedBox(height: 24),
 
-                // Full Name field
+                
                 Text(AppStrings.fullName, style: AppTextStyles.fieldLabel),
                 const SizedBox(height: 8),
                 TextField(
@@ -115,7 +115,7 @@ class _RegistrationCardState extends State<RegistrationCard> {
                 ),
                 const SizedBox(height: 16),
 
-                // Email field
+                
                 Text(
                   AppStrings.email,
                   style: GoogleFonts.inter(
@@ -140,7 +140,7 @@ class _RegistrationCardState extends State<RegistrationCard> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password field
+                
                 Text(AppStrings.password, style: AppTextStyles.fieldLabel),
                 const SizedBox(height: 8),
                 TextField(
@@ -172,7 +172,7 @@ class _RegistrationCardState extends State<RegistrationCard> {
                 ),
                 const SizedBox(height: 16),
 
-                // Verify Password field
+                
                 Text(
                   AppStrings.verifyPassword,
                   style: GoogleFonts.inter(
@@ -212,7 +212,7 @@ class _RegistrationCardState extends State<RegistrationCard> {
                 ),
                 const SizedBox(height: 24),
 
-                // Register button
+                
                 SizedBox(
                   width: double.infinity,
                   height: 56,

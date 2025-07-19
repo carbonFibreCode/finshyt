@@ -18,7 +18,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
   await initDependencies();
-  Bloc.observer = MyBlocObserver();
+  //Bloc.observer = MyBlocObserver();
   runApp(
     MultiBlocProvider(
       providers: [
